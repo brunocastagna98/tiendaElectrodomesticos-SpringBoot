@@ -15,7 +15,7 @@
 	<artifactId>carrito-service-electro</artifactId>
 	<version>0.0.1</version>
 	<name>carrito-service-electro</name>
-	<description>Proyecto para practicar. </description>
+	<description>Proyecto para practicar.</description>
 
 	<properties>
 		<java.version>17</java.version>
@@ -24,11 +24,14 @@
 	</properties>
 
 	<dependencies>
+		<!-- ✅ Swagger / OpenAPI UI -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.8.13</version>
 		</dependency>
+
+		<!-- Spring Boot / Infra básica -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -37,42 +40,53 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
+		<!-- ✅ Circuit Breaker + Retry -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
 		</dependency>
+
+		<!-- Config Server client -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
+
+		<!-- Eureka client -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
+
+		<!-- Feign client -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 
-		<!-- 👇 NUEVO: LoadBalancer explícito -->
+		<!-- ✅ LoadBalancer explícito -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
 		</dependency>
 
+		<!-- MySQL driver -->
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Lombok agregado -->
+		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
+		<!-- Tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -94,7 +108,7 @@
 
 	<build>
 		<plugins>
-			<!-- Lombok procesador de anotaciones -->
+			<!-- Procesador de anotaciones (Lombok) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -109,11 +123,11 @@
 				</configuration>
 			</plugin>
 
+			<!-- Spring Boot plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<!-- Evitamos empaquetar Lombok en el JAR -->
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>

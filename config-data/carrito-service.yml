@@ -1,4 +1,7 @@
 spring:
+  application:
+    name: carrito-service-electro
+
   datasource:
     url: jdbc:mysql://mysql-db:3306/carrito_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: bruno
@@ -12,3 +15,22 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+
+# --- Resilience4j (Circuit Breaker + Retry) ---
+resilience4j:
+  circuitbreaker:
+    instances:
+      productosCB:
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+  retry:
+    instances:
+      productosRetry:
+        max-attempts: 3
+        wait-duration: 2s
+
+# --- Swagger / OpenAPI ---
+springdoc:
+  swagger-ui:
+    path: /docs
