@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false         # ✅ usamos SOLO tus rutas
+          lower-case-service-id: true
+      routes:
+        - id: producto-route
+          uri: lb://producto-service
+          predicates:
+            - Path=/productos/**
+          # StripPrefix=0 es redundante (por defecto es 0)
+        - id: carrito-route
+          uri: lb://carrito-service
+          predicates:
+            - Path=/carrito/**
+        - id: venta-route
+          uri: lb://venta-service
+          predicates:
+            - Path=/venta/**
