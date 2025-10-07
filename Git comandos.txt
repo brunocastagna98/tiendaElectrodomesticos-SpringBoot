@@ -1,1 +1,0 @@
-1/10/2025 - Hoy voy a implementar Circuit Breaker , para eso cree una rama especial llamada circuit-breaker ...Es caso de que cometa algun error, rompa el proyecyo, demas...puedo volver al main con: git checkout main
