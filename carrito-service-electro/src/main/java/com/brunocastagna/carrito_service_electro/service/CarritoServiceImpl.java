@@ -7,23 +7,36 @@ import com.brunocastagna.carrito_service_electro.dto.ProductoDTO;
 import com.brunocastagna.carrito_service_electro.model.Carrito;
 import com.brunocastagna.carrito_service_electro.model.Item;
 import com.brunocastagna.carrito_service_electro.repository.CarritoRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class CarritoServiceImpl implements CarritoService {
 
     private final ProductoClient productoClient;
     private final CarritoRepository carritoRepo;
 
-
-    public CarritoServiceImpl(ProductoClient productoClient, CarritoRepository carritoRepo) {
-        this.productoClient = productoClient;
-        this.carritoRepo = carritoRepo;
+    //Hago los metodos para el Circuit Breaker
+    @CircuitBreaker(name = "productosCB", fallbackMethod = "fallbackProducto")
+    @Retry(name = "productosRetry")
+    public ProductoDTO obtenerProductoSeguro(Long idProducto){
+        return productoClient.traerProducto(idProducto);
     }
+
+    //Aca va el fallback
+    public ProductoDTO fallbackProducto(Long idProducto, Throwable ex){
+        return new ProductoDTO(idProducto, "Producto no disponible", BigDecimal.ZERO);
+    }
+
+
+
 
     @Override
     public Carrito crearCarrito(Carrito carrito) {
@@ -52,7 +65,7 @@ public class CarritoServiceImpl implements CarritoService {
         List<ItemDTO> productos = new ArrayList<>();
         for (Item item : carrito.getListaItems()) {
             // Traigo datos del producto
-            ProductoDTO producto = productoClient.traerProducto(item.getIdProducto());
+            ProductoDTO producto = obtenerProductoSeguro(item.getIdProducto());
 
             // Armo el ItemDTO con la info del producto + cantidad + subtotal
             ItemDTO itemDTO = new ItemDTO(
@@ -89,7 +102,7 @@ public class CarritoServiceImpl implements CarritoService {
                 .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
 
         // 2. Traer producto desde el microservicio de productos
-        ProductoDTO producto = productoClient.traerProducto(idProducto);
+        ProductoDTO producto = obtenerProductoSeguro(idProducto);
 
         // 3. Buscar si el producto ya está en el carrito (con for)
         //con esto determino cuales items estan o no para no repetirlos
